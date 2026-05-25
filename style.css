@@ -1,0 +1,316 @@
+/* --- DESIGN SYSTEM VARIABLES --- */
+:root {
+    --primary: #a5dd23;
+    /* Deep Purple */
+    --accent: #FF2D7B;
+    /* Neon Pink */
+    --bg-dark: #0D0B1E;
+    /* Deep Nightlife Background */
+    --text-main: #FFFFFF;
+    --text-muted: #A09DB0;
+    --glass-bg: rgba(26, 21, 53, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.08);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* --- PARTICLE ANIMATIONS --- */
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: -1;
+    animation: float 8s infinite ease-in-out;
+}
+
+.p1 {
+    width: 300px;
+    height: 300px;
+    background: var(--primary);
+    top: -5%;
+    left: -5%;
+    opacity: 0.5;
+    animation-delay: 0s;
+}
+
+.p2 {
+    width: 250px;
+    height: 250px;
+    background: var(--accent);
+    bottom: -5%;
+    right: -5%;
+    opacity: 0.4;
+    animation-delay: 2s;
+}
+
+.p3 {
+    width: 200px;
+    height: 200px;
+    background: #4facfe;
+    /* Neon Blue Accent */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.2;
+    animation-delay: 4s;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-20px) scale(1.05);
+    }
+}
+
+/* --- GLASSMORPHISM COMPONENT --- */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 420px;
+    z-index: 10;
+}
+
+/* --- AUTH UI --- */
+.brand {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.brand .neon-icon {
+    font-size: 2.5rem;
+    color: var(--accent);
+    text-shadow: 0 0 15px rgba(255, 45, 123, 0.5);
+    margin-bottom: 10px;
+}
+
+.brand h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.brand p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group.hidden {
+    display: none;
+}
+
+.input-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+}
+
+.input-group input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 15px rgba(108, 43, 217, 0.3);
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(255, 45, 123, 0.4);
+}
+
+.auth-links {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.auth-links p {
+    margin-bottom: 10px;
+    color: var(--text-muted);
+}
+
+.auth-links a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.auth-links a:hover {
+    color: white;
+    text-shadow: 0 0 10px var(--accent);
+}
+
+/* =========================================
+   ADMIN DASHBOARD STYLES
+   ========================================= */
+.admin-body {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background: var(--glass-bg);
+    border-right: 1px solid var(--glass-border);
+    padding: 30px 20px;
+    backdrop-filter: blur(16px);
+}
+
+.sidebar-menu {
+    margin-top: 40px;
+    list-style: none;
+}
+
+.sidebar-menu li {
+    margin-bottom: 15px;
+}
+
+.sidebar-menu a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 1.1rem;
+    display: block;
+    padding: 12px 15px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+    background: rgba(108, 43, 217, 0.2);
+    color: white;
+    border-left: 4px solid var(--accent);
+}
+
+.sidebar-menu i {
+    margin-right: 10px;
+}
+
+.main-content {
+    flex: 1;
+    height: 100vh;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* Data Tables */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    color: white;
+}
+
+.data-table th,
+.data-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.data-table th {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.badge.live {
+    background: rgba(0, 255, 0, 0.2);
+    color: #00ff00;
+}
+
+/* Custom Dropdown Styles */
+.input-group select {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+}
+
+.input-group select option {
+    background: var(--bg-dark);
+    color: white;
+}
+
+/* Global Hidden Class */
+.hidden {
+    display: none !important;
+}

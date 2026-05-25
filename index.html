@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventify | Portal</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+<body>
+
+    <div class="particle p1"></div>
+    <div class="particle p2"></div>
+    <div class="particle p3"></div>
+
+    <main class="auth-container">
+        <div class="glass-card auth-box">
+            <div class="brand">
+                <i class="fa-solid fa-bolt neon-icon"></i>
+                <h2>Eventify</h2>
+                <p>College Event Portal</p>
+            </div>
+
+				<form id="authForm">
+                <div class="input-group hidden" id="nameGroup">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="fullName" placeholder="Full Name">
+                </div>
+
+                <div id="studentFields" class="hidden">
+                    <div class="input-group">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="tel" id="mobile" placeholder="Mobile Number (10 digits)">
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <input type="text" id="college" placeholder="College Name">
+                    </div>
+                </div>
+
+                <div id="vendorFields" class="hidden">
+                    <div class="input-group" style="background: rgba(0,0,0,0.2); border-radius:12px; padding: 10px;">
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:5px;">Upload Visiting Card (Required for Admin Verification)</p>
+                        <input type="file" id="visitingCard" accept="image/*" style="padding:5px; border:none; width: 100%;">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="email" placeholder="Email Address" required>
+                </div>
+                
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+
+                <button type="submit" class="btn-primary" id="submitBtn">Sign In</button>
+            </form>
+
+            <div class="auth-links">
+                <p>New participant? <a href="#" id="toggleMode">Create an account</a></p>
+                <p>Are you a Vendor? <a href="#" id="vendorLogin">Vendor Portal</a></p>
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

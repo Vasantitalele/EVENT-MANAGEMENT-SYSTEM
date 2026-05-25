@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Eventify</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+<body class="admin-body">
+
+    <nav class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-bolt neon-icon" style="font-size: 1.5rem;"></i>
+            <h2 style="font-size: 1.5rem;">Admin Panel</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" id="tab-fests" class="active"><i class="fa-solid fa-calendar-days"></i> Manage Fests</a></li>
+            <li><a href="#" id="tab-events"><i class="fa-solid fa-list-check"></i> Manage Events</a></li>
+            <li><a href="#" id="tab-registrations"><i class="fa-solid fa-users"></i> Registrations</a></li>
+            <li><a href="#" id="tab-quotes"><i class="fa-solid fa-file-invoice-dollar"></i> Vendor Quotes</a></li>
+            <li><a href="#" id="logoutBtn" style="color: #ff4757; margin-top: 50px;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        
+        <div id="section-fests">
+            <div class="header-flex">
+                <h2>Fest Manager</h2>
+                <button class="btn-primary" style="width: auto; padding: 10px 20px;" id="showFestFormBtn">+ Create New Fest</button>
+            </div>
+
+            <div class="glass-card hidden" id="festFormCard" style="max-width: 100%; margin-bottom: 30px;">
+                <h3 style="margin-bottom: 20px; color: var(--accent);">Create a New Fest</h3>
+                <form id="createFestForm">
+                    <div class="input-group">
+                        <i class="fa-solid fa-heading"></i>
+                        <input type="text" id="festName" placeholder="Fest Name (e.g., Tech Fest 2k26)" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-align-left"></i>
+                        <input type="text" id="festDesc" placeholder="Short Description" required>
+                    </div>
+                    <div style="display: flex; gap: 20px;">
+                        <div class="input-group" style="flex: 1;">
+                            <i class="fa-solid fa-calendar"></i>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div class="input-group" style="flex: 1;">
+                            <i class="fa-solid fa-calendar-check"></i>
+                            <input type="date" id="endDate" required>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group" style="background: rgba(0,0,0,0.2); border-radius:12px; padding: 10px;">
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:5px;">Upload Fest Banner/Poster (Optional on edit)</p>
+                        <input type="file" id="festPoster" accept="image/*" style="padding:5px; border:none; width: 100%;">
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="saveFestBtn">Save Fest</button>
+                </form>
+            </div>
+
+            <div class="glass-card" style="max-width: 100%;">
+                <table class="data-table">
+                    <thead><tr><th>Fest Name & Poster</th><th>Dates</th><th>Status</th><th>Action</th></tr></thead>
+                    <tbody id="festTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="section-events" class="hidden">
+            <div class="header-flex">
+                <h2>Event Manager</h2>
+                <button class="btn-primary hidden" style="width: auto; padding: 10px 20px;" id="showEventFormBtn">+ Add Event</button>
+            </div>
+
+            <div class="input-group" style="margin-bottom: 30px;">
+                <i class="fa-solid fa-filter"></i>
+                <select id="festSelector">
+                    <option value="" disabled selected>Select a Fest to manage its events...</option>
+                </select>
+            </div>
+            
+            <div class="glass-card hidden" id="eventFormCard" style="max-width: 100%; margin-bottom: 30px;">
+                <h3 style="margin-bottom: 20px; color: var(--accent);">Add New Event to Fest</h3>
+                <form id="createEventForm">
+                    <div class="input-group">
+                        <i class="fa-solid fa-trophy"></i>
+                        <input type="text" id="eventName" placeholder="Event Name (e.g., Robo Rush)" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fa-solid fa-tags"></i>
+                        <select id="eventCategory" required style="width:100%; background:transparent; border:none; color:white; padding:15px; outline:none; font-family:inherit;">
+                            <option value="" disabled selected style="background: #1e1e2f; color: white;">Select Category...</option>
+                            <option value="Technical" style="background: #1e1e2f; color: white;">Technical</option>
+                            <option value="Cultural" style="background: #1e1e2f; color: white;">Cultural</option>
+                            <option value="Sports" style="background: #1e1e2f; color: white;">Sports</option>
+                            <option value="E-Sports" style="background: #1e1e2f; color: white;">E-Sports</option>
+                            <option value="Workshop" style="background: #1e1e2f; color: white;">Workshop</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-info-circle"></i>
+                        <input type="text" id="eventDesc" placeholder="Event Description" required>
+                    </div>
+                    <div style="display: flex; gap: 20px;">
+                        <div class="input-group" style="flex: 1;">
+                            <i class="fa-solid fa-calendar-day"></i>
+                            <input type="date" id="eventDate" required>
+                        </div>
+                        <div class="input-group" style="flex: 1;">
+                            <i class="fa-solid fa-indian-rupee-sign"></i>
+                            <input type="number" id="eventFee" placeholder="Entry Fee (0 for free)" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group" style="background: rgba(0,0,0,0.2); border-radius:12px; padding: 10px;">
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:5px;">Upload Event Poster (Optional on edit)</p>
+                        <input type="file" id="eventPoster" accept="image/*" style="padding:5px; border:none; width: 100%;">
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="saveEventBtn">Save Event</button>
+                </form>
+            </div>
+
+            <div class="glass-card" style="max-width: 100%;">
+                <table class="data-table">
+                    <thead><tr><th>Event & Category</th><th>Fee</th><th>Date</th><th>Action</th></tr></thead>
+                    <tbody id="eventTableBody">
+                        <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Please select a Fest first.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="section-registrations" class="hidden">
+            <div class="header-flex">
+                <h2>Payment Verification Desk</h2>
+                <button class="btn-primary" style="width:auto; padding:10px 20px; background: #2ed573;" onclick="exportToCSV()">
+                    <i class="fa-solid fa-download"></i> Export CSV
+                </button>
+            </div>
+
+            <div class="glass-card" style="max-width: 100%;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Event Details</th>
+                            <th>Txn ID</th>
+                            <th>Screenshot</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="registrationTableBody">
+                        <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No pending registrations found.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="section-quotes" class="hidden">
+            <div class="header-flex">
+                <h2>Vendor Quotations</h2>
+            </div>
+
+            <div id="quoteContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+                </div>
+        </div>
+
+    </main>
+
+    <div id="notifToast" class="glass-card hidden" style="position:fixed; bottom:20px; right:20px; border-left: 5px solid var(--accent); padding:15px 25px; z-index:1000; animation: slideIn 0.5s forwards;">
+        <p id="notifText" style="font-weight:600;"></p>
+    </div>
+
+    <style>
+    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    </style>
+
+    <script src="admin.js"></script>
+</body>
+</html>

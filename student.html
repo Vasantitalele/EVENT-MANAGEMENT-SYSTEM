@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal | Eventify</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <style>
+        .hero-banner {
+            background: linear-gradient(135deg, rgba(108, 43, 217, 0.2), rgba(0, 0, 0, 0.5));
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        .filter-container {
+            display: flex; gap: 10px; margin-bottom: 25px; overflow-x: auto; padding-bottom: 10px;
+        }
+        .filter-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: white; padding: 8px 20px; border-radius: 30px; cursor: pointer; transition: 0.3s;
+            font-family: 'Outfit', sans-serif; white-space: nowrap;
+        }
+        .filter-btn:hover { border-color: var(--primary); }
+        .filter-btn.active { background: var(--primary); color: #0f0f1a; font-weight: 600; border-color: var(--primary); }
+        
+        .event-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;
+        }
+        .event-card {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+            border-radius: 15px; overflow: hidden; transition: transform 0.3s, border-color 0.3s;
+            display: flex; flex-direction: column;
+        }
+        .event-card:hover { transform: translateY(-5px); border-color: var(--accent); background: rgba(255,255,255,0.06); }
+        .event-poster { width: 100%; height: 160px; object-fit: cover; background: #1a1a2e; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .event-details { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .fest-header-img { width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; opacity: 0.8; }
+    </style>
+</head>
+<body class="admin-body">
+
+    <nav class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-bolt neon-icon" style="font-size: 1.5rem;"></i>
+            <h2 style="font-size: 1.5rem;">Student Portal</h2>
+            <p id="studentNameDisplay" style="color: var(--text-muted); margin-top:5px; font-size:0.9rem;">Loading...</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" id="tab-browse" class="active"><i class="fa-solid fa-compass"></i> Discover</a></li>
+            <li><a href="#" id="tab-my-events"><i class="fa-solid fa-ticket"></i> My Tickets</a></li>
+            <li><a href="#" id="logoutBtn" style="color: #ff4757; margin-top: 50px;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        
+        <div id="section-browse">
+            <div class="hero-banner">
+                <h1 style="color: white; font-size: 2.5rem; margin-bottom: 10px;">Discover <span style="color: var(--primary);">Extraordinary</span> Events</h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">Explore tech fests, cultural nights, and epic sports tournaments.</p>
+            </div>
+
+            <div class="filter-container" id="categoryFilters">
+                <button class="filter-btn active" data-category="All">All Events</button>
+                <button class="filter-btn" data-category="Technical">Technical</button>
+                <button class="filter-btn" data-category="Cultural">Cultural</button>
+                <button class="filter-btn" data-category="Sports">Sports</button>
+                <button class="filter-btn" data-category="E-Sports">E-Sports</button>
+                <button class="filter-btn" data-category="Workshop">Workshop</button>
+            </div>
+
+            <div id="browseContainer" style="display: flex; flex-direction: column; gap: 40px;">
+                </div>
+        </div>
+
+        <div id="section-my-events" class="hidden">
+            <div class="header-flex">
+                <h2>My Tickets</h2>
+            </div>
+            <div class="glass-card" style="max-width: 100%;">
+                <table class="data-table">
+                    <thead><tr><th>Booking ID</th><th>Event</th><th>Amount Paid</th><th>Status</th></tr></thead>
+                    <tbody id="myRegistrationsTable">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="paymentModal" class="glass-card hidden" style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:100; width:90%; max-width:500px; max-height: 90vh; overflow-y:auto; border: 1px solid var(--accent);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="color:var(--accent);">Register for <span id="modalEventName">Event</span></h3>
+                <button id="closeModalBtn" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.3); padding:15px; border-radius:10px; margin-bottom:20px; text-align:center;">
+                <p style="color:var(--text-muted); font-size:0.9rem;">Pay securely via UPI to Admin</p>
+                <h2 style="margin:10px 0;">₹<span id="modalEventFee">0</span></h2>
+                <p style="font-family:monospace; color:var(--primary); font-size: 1.1rem; letter-spacing: 1px;">UPI ID: college.admin@upi</p>
+            </div>
+
+            <form id="registrationForm">
+                <input type="hidden" id="regEventId">
+                <input type="hidden" id="regEventName">
+                <input type="hidden" id="regEventFee">
+
+                <div class="input-group">
+                    <i class="fa-solid fa-receipt"></i>
+                    <input type="text" id="upiTxnId" placeholder="Enter 12-digit UPI Transaction ID" required>
+                </div>
+                
+                <div class="input-group" style="background: rgba(0,0,0,0.2); border-radius:12px; padding: 10px;">
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:5px;">Upload Payment Screenshot (Required)</p>
+                    <input type="file" id="paymentScreenshot" accept="image/*" required style="padding:5px; border:none; width: 100%;">
+                </div>
+
+                <button type="submit" class="btn-primary" id="submitRegBtn">Submit Payment Proof</button>
+            </form>
+        </div>
+        <div id="modalOverlay" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index:99;"></div>
+
+    </main>
+
+    <script src="student.js"></script>
+</body>
+</html>
